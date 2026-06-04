@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://myroom_player_scene"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.32
+height = 1.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_hand"]
+size = Vector3(0.14, 0.08, 0.28)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hand"]
+albedo_color = Color(0.62, 0.43, 0.33, 1)
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_player")
+
+[node name="Head" type="Node3D" parent="."]
+position = Vector3(0, 0.65, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+
+[node name="HandLeft" type="MeshInstance3D" parent="Head"]
+position = Vector3(-0.25, -0.25, -0.45)
+mesh = SubResource("BoxMesh_hand")
+surface_material_override/0 = SubResource("StandardMaterial3D_hand")
+
+[node name="HandRight" type="MeshInstance3D" parent="Head"]
+position = Vector3(0.25, -0.25, -0.45)
+mesh = SubResource("BoxMesh_hand")
+surface_material_override/0 = SubResource("StandardMaterial3D_hand")
+
+[node name="InteractRay" type="RayCast3D" parent="."]
+position = Vector3(0, 0.65, 0)
+target_position = Vector3(0, 0, -2.5)
+collision_mask = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

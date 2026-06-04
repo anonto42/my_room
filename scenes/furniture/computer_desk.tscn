@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://myroom_computer_desk_scene"]
+
+[ext_resource type="Script" path="res://scripts/computer.gd" id="1_computer"]
+
+[node name="ComputerDesk" type="Node3D"]
+script = ExtResource("1_computer")

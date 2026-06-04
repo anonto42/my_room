@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://myroom_bed_scene"]
+
+[ext_resource type="Script" path="res://scripts/bed.gd" id="1_bed"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_bed"]
+size = Vector3(2.1, 0.5, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bed"]
+size = Vector3(2.1, 0.6, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bed_area"]
+size = Vector3(2.6, 1.4, 3.4)
+
+[node name="Bed" type="Node3D"]
+script = ExtResource("1_bed")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_bed")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_bed")
+
+[node name="InteractArea" type="Area3D" parent="."]
+position = Vector3(0, 0.5, 0)
+collision_layer = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+shape = SubResource("BoxShape3D_bed_area")
+
+[node name="SleepPosition" type="Marker3D" parent="."]
+position = Vector3(0, 0.75, -0.25)
+rotation = Vector3(0, 3.14159, 1.5708)

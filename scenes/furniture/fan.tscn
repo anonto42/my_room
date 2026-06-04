@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://myroom_fan_scene"]
+
+[ext_resource type="Script" path="res://scripts/fan.gd" id="1_fan"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_base"]
+size = Vector3(0.45, 1.3, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_blade"]
+size = Vector3(1.4, 0.04, 0.16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_blade_cross"]
+size = Vector3(0.16, 0.04, 1.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fan"]
+size = Vector3(1.5, 1.5, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fan_area"]
+size = Vector3(2, 2, 1.5)
+
+[node name="Fan" type="Node3D"]
+script = ExtResource("1_fan")
+
+[node name="FanBase" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_base")
+
+[node name="FanBlade" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.75, -0.28)
+mesh = SubResource("BoxMesh_blade")
+
+[node name="FanBladeCross" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.75, -0.28)
+mesh = SubResource("BoxMesh_blade_cross")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.35, -0.1)
+collision_layer = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_fan")
+
+[node name="InteractArea" type="Area3D" parent="."]
+position = Vector3(0, 0.5, 0)
+collision_layer = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+shape = SubResource("BoxShape3D_fan_area")
