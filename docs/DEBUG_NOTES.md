@@ -12,9 +12,10 @@ Checked:
 - Interactable scripts for fan, AC, bed, gaming chair, computer, and monitor UI.
 - Standalone scene placeholders under `scenes/`.
 
-Could not run:
+Environment note:
 
-- A Godot editor/headless parse, because no `godot` or `godot4` executable is installed on PATH in this environment.
+- `godot` and `godot4` are not installed on PATH.
+- The local binary `/home/sohidul/.local/bin/godot-4.6.3` is available and was used for validation.
 
 ## Fixes Made
 
@@ -80,16 +81,19 @@ Why:
 
 Passed:
 
-- `git diff --check`
 - Static source review of updated scripts and scenes
+- `/home/sohidul/.local/bin/godot-4.6.3 --headless --path /home/sohidul/code/my_room --quit`
+- `/home/sohidul/.local/bin/godot-4.6.3 --headless --path /home/sohidul/code/my_room --quit-after 1`
 
 Still needed in Godot:
 
-- Open `scenes/main.tscn`.
-- Confirm there are no script parser errors.
-- Press Play and test:
+- Open `scenes/main.tscn` in the editor for visual inspection.
+- Press Play with a visible window and test:
   - WASD movement
   - mouse look
+  - opening the gate into New Harbor City
+  - walking through the south wall opening
+  - city site prompts and messages
   - fan toggle
   - AC toggle
   - PC power toggle
@@ -103,3 +107,4 @@ Still needed in Godot:
 - Audio players are supported by scripts, but actual `.ogg` files are not yet included.
 - Monitor UI is a working placeholder desktop, not a full fake OS yet.
 - Some standalone furniture scene files are minimal placeholders; the complete v1 playable scene is `scenes/main.tscn`.
+- New Harbor City is currently made from primitive placeholder geometry and `Marker3D` asset slots. This is intentional until the first final 3D asset pipeline is chosen.

@@ -17,6 +17,7 @@ Uses:
 
 - `Node3D` root scene
 - Procedural primitive room setup
+- Data-driven city setup
 - Runtime furniture setup
 - Runtime player setup
 - Runtime lighting setup
@@ -27,12 +28,13 @@ Why these are the best fit:
 
 - `Node3D` is the correct root for a 3D first-person game.
 - Procedural primitive setup lets the game run now without waiting for final `.glb` models.
-- Keeping setup in `main.gd` makes the current prototype easy to debug because the full room is created from one clear entry point.
-- `GameState` is best for shared state like PC, fan, AC, sitting, and sleeping because multiple objects need to read or update those values.
+- Keeping setup in `main.gd` makes the current prototype easy to debug because the full playable world is created from one clear entry point.
+- City dictionaries are the best current fit because districts, buildings, interaction points, and lights can be changed without rewriting builder logic.
+- `GameState` is best for shared state like PC, fan, AC, sitting, sleeping, current zone, city visits, and story flags because multiple objects need to read or update those values.
 
 Player experience:
 
-- This is the main playable room page. The player spawns inside the room and can walk, look, and interact with the room objects.
+- This is the main playable world page. The player spawns inside the safehouse room and can move out into New Harbor City through the gate.
 
 ## Player Page
 
@@ -93,7 +95,57 @@ Why these are the best fit:
 
 Player experience:
 
-- The player is contained inside a 10m by 10m room with walls and ceiling.
+- The player starts inside a 10m by 10m safehouse room.
+- The south wall now has a gate opening that connects to the city.
+
+## City Page
+
+Runtime builder:
+
+- `scripts/main.gd`
+
+Scripts:
+
+- `res://scripts/city_site.gd`
+- `res://scripts/game_state.gd`
+
+Uses:
+
+- `CITY_DISTRICTS` dictionaries
+- `CITY_BLOCKS` dictionaries
+- `CITY_SITES` dictionaries
+- `STREET_LIGHT_POSITIONS`
+- `MeshInstance3D` placeholder geometry
+- `StaticBody3D` collision
+- `Area3D` city entry trigger
+- `Marker3D` asset slots
+- `Label3D` district and building labels
+- `GameState.current_zone`
+- `GameState.visited_city_sites`
+- `GameState.city_story_flags`
+
+Why these are the best fit:
+
+- Dictionaries make the city flexible. To add a new district, building, or interaction site, add one data entry instead of duplicating scene-building code.
+- Primitive meshes keep the city playable before final 3D assets exist.
+- `Marker3D` asset slots give future imported models a stable place to attach without redesigning gameplay logic.
+- `Area3D` is the right choice for zone detection because entering the city should react to player position, not a button press.
+- `city_site.gd` keeps all city inspection points using the same interaction contract as room objects.
+
+Player experience:
+
+- The player opens the gate and walks into New Harbor City.
+- The current city block includes Home Row, Maker Yards, Market Spine, and Civic Core.
+- The player can inspect the city map, power grid, market board, transit node, and water station.
+- Each inspected site records story progress in `GameState`.
+
+How to update this page:
+
+- Add a district in `CITY_DISTRICTS` when the city needs a new named ground area.
+- Add a building in `CITY_BLOCKS` when the city needs a new visible structure.
+- Add a site in `CITY_SITES` when the player needs a new interactable story, job, shop, or system point.
+- Replace placeholders by instancing imported 3D assets at each node's `AssetSlot`.
+- Keep gameplay state in `GameState`; keep local visuals inside the builder or the site script.
 
 ## Bed Page
 
@@ -291,12 +343,17 @@ Uses:
 - Autoload singleton
 - Shared booleans
 - Signals
+- Current city zone
+- City story flags
+- Visited city sites
+- Active objectives
 
 Why these are the best fit:
 
 - An autoload is available everywhere without manually passing references between unrelated objects.
 - Shared booleans are simple and clear for the current v1 states.
 - Signals let future UI, audio, saving, and analytics systems react to state changes without tightly coupling to object scripts.
+- City dictionaries and story flags prepare the project for save/load and quest tracking without building those full systems too early.
 
 Current shared states:
 
@@ -307,11 +364,17 @@ Current shared states:
 - `pc_is_on`
 - `room_light_on`
 - `current_time_of_day`
+- `current_zone`
+- `current_chapter`
+- `city_reputation`
+- `visited_city_sites`
+- `city_story_flags`
+- `active_objectives`
 
-## Why This Architecture Is Good For V1
+## Why This Architecture Is Good For The Current Version
 
 - It runs without external models or audio assets.
 - It keeps each gameplay object in its own script.
 - It uses Godot 4-native systems: `CharacterBody3D`, `RayCast3D`, `SubViewport`, `Control`, `Tween`, and `CanvasLayer`.
 - It is easy to replace primitive meshes with final assets later.
-- It leaves clear extension points for fake OS apps, music, browser, save data, and day/night cycle.
+- It leaves clear extension points for fake OS apps, music, browser, save data, day/night cycle, district loading, shops, jobs, transit, and city simulation.

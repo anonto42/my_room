@@ -4,6 +4,116 @@ const LAYER_WORLD := 1
 const LAYER_INTERACTABLE := 2
 const MONITOR_X_POSITIONS: Array[float] = [-1.45, -0.45, 0.55, 1.55]
 const MONITOR_Y_ROTATIONS: Array[float] = [-14.0, -5.0, 5.0, 14.0]
+const CITY_DISTRICTS: Array[Dictionary] = [
+	{
+		"id": &"home_row",
+		"name": "Home Row",
+		"position": Vector3(-9.0, 0.02, 13.0),
+		"size": Vector3(9.5, 0.08, 10.0),
+		"material": &"sidewalk",
+		"label": "HOME ROW"
+	},
+	{
+		"id": &"maker_yards",
+		"name": "Maker Yards",
+		"position": Vector3(10.0, 0.02, 21.0),
+		"size": Vector3(13.0, 0.08, 13.0),
+		"material": &"concrete",
+		"label": "MAKER YARDS"
+	},
+	{
+		"id": &"market_spine",
+		"name": "Market Spine",
+		"position": Vector3(-10.0, 0.02, 31.0),
+		"size": Vector3(13.0, 0.08, 12.0),
+		"material": &"plaza",
+		"label": "MARKET"
+	},
+	{
+		"id": &"civic_core",
+		"name": "Civic Core",
+		"position": Vector3(7.5, 0.02, 39.0),
+		"size": Vector3(15.0, 0.08, 13.0),
+		"material": &"civic_floor",
+		"label": "CIVIC CORE"
+	}
+]
+const CITY_BLOCKS: Array[Dictionary] = [
+	{"id": &"apartment_stack", "name": "Apartment Stack", "position": Vector3(-7.5, 2.05, 9.0), "size": Vector3(4.0, 4.1, 5.5), "material": &"building_home", "label": "HOMES"},
+	{"id": &"corner_store", "name": "Corner Store", "position": Vector3(6.5, 1.35, 10.5), "size": Vector3(4.8, 2.7, 4.2), "material": &"building_market", "label": "STORE"},
+	{"id": &"workshop_a", "name": "Open Workshop", "position": Vector3(13.0, 1.7, 19.0), "size": Vector3(5.8, 3.4, 4.0), "material": &"building_maker", "label": "SHOP"},
+	{"id": &"workshop_b", "name": "Print Foundry", "position": Vector3(5.5, 2.25, 25.5), "size": Vector3(5.2, 4.5, 5.8), "material": &"building_maker_dark", "label": "FOUNDRY"},
+	{"id": &"market_hall", "name": "Market Hall", "position": Vector3(-13.5, 2.0, 31.0), "size": Vector3(5.0, 4.0, 8.0), "material": &"building_market", "label": "HALL"},
+	{"id": &"clinic", "name": "Clinic", "position": Vector3(-4.5, 1.6, 35.0), "size": Vector3(4.5, 3.2, 5.0), "material": &"building_civic", "label": "CLINIC"},
+	{"id": &"city_hall", "name": "City Hall", "position": Vector3(8.0, 3.0, 40.0), "size": Vector3(7.0, 6.0, 6.5), "material": &"building_civic", "label": "CITY HALL"},
+	{"id": &"transit_depot", "name": "Transit Depot", "position": Vector3(16.5, 1.3, 34.0), "size": Vector3(5.0, 2.6, 8.5), "material": &"building_transit", "label": "DEPOT"}
+]
+const CITY_SITES: Array[Dictionary] = [
+	{
+		"id": &"city_map",
+		"title": "City Map Kiosk",
+		"story_flag": &"mapped_city",
+		"position": Vector3(0.0, 0.45, 9.2),
+		"size": Vector3(0.9, 0.9, 0.35),
+		"material": &"city_marker",
+		"label": "MAP",
+		"hint": "Press E to scan the city map",
+		"message": "Map synced: districts can now become missions, shops, homes, or story scenes."
+	},
+	{
+		"id": &"power_grid",
+		"title": "Power Grid Cabinet",
+		"story_flag": &"found_power_grid",
+		"position": Vector3(8.5, 0.6, 18.0),
+		"size": Vector3(0.9, 1.2, 0.6),
+		"material": &"city_power",
+		"label": "GRID",
+		"hint": "Press E to inspect power grid",
+		"message": "Grid checked: future systems can connect city lighting, homes, weather, and devices."
+	},
+	{
+		"id": &"market_board",
+		"title": "Market Request Board",
+		"story_flag": &"met_market",
+		"position": Vector3(-9.5, 0.65, 27.2),
+		"size": Vector3(1.4, 1.3, 0.25),
+		"material": &"city_market",
+		"label": "JOBS",
+		"hint": "Press E to read market board",
+		"message": "Requests unlocked: this can become the quest board for city life."
+	},
+	{
+		"id": &"transit_node",
+		"title": "Transit Node",
+		"story_flag": &"found_transit",
+		"position": Vector3(14.2, 0.55, 30.0),
+		"size": Vector3(1.2, 1.1, 0.55),
+		"material": &"city_transit",
+		"label": "BUS",
+		"hint": "Press E to inspect transit node",
+		"message": "Transit marked: this placeholder can later load districts, vehicles, or fast travel."
+	},
+	{
+		"id": &"water_pump",
+		"title": "Water Pump Station",
+		"story_flag": &"found_water",
+		"position": Vector3(3.2, 0.55, 43.0),
+		"size": Vector3(1.1, 1.1, 0.55),
+		"material": &"city_water",
+		"label": "WATER",
+		"hint": "Press E to inspect water station",
+		"message": "Water station logged: the city can grow survival, comfort, and economy systems here."
+	}
+]
+const STREET_LIGHT_POSITIONS: Array[Vector3] = [
+	Vector3(-4.0, 0.0, 8.0),
+	Vector3(4.0, 0.0, 14.0),
+	Vector3(-4.0, 0.0, 22.0),
+	Vector3(4.0, 0.0, 30.0),
+	Vector3(-11.0, 0.0, 24.0),
+	Vector3(12.5, 0.0, 36.0),
+	Vector3(0.0, 0.0, 42.0)
+]
 
 var _materials: Dictionary = {}
 var _player: CharacterBody3D
@@ -22,6 +132,7 @@ func _ready() -> void:
 	_ensure_input_map()
 	_make_materials()
 	_create_room()
+	_create_city()
 	_create_furniture()
 	_create_lighting()
 	_create_ui()
@@ -87,6 +198,27 @@ func _make_materials() -> void:
 	_materials.guitar_bass = _material(Color(0.08, 0.12, 0.16))
 	_materials.guitar_neck = _material(Color(0.48, 0.28, 0.12))
 	_materials.guitar_string = _material(Color(0.78, 0.78, 0.74))
+	_materials.asphalt = _material(Color(0.06, 0.065, 0.07))
+	_materials.road_marking = _material(Color(0.95, 0.86, 0.42), Color(0.8, 0.65, 0.2), 0.05)
+	_materials.sidewalk = _material(Color(0.46, 0.48, 0.46))
+	_materials.concrete = _material(Color(0.38, 0.4, 0.38))
+	_materials.plaza = _material(Color(0.5, 0.43, 0.34))
+	_materials.civic_floor = _material(Color(0.42, 0.46, 0.5))
+	_materials.grass = _material(Color(0.15, 0.34, 0.2))
+	_materials.building_home = _material(Color(0.36, 0.32, 0.3))
+	_materials.building_market = _material(Color(0.5, 0.22, 0.24))
+	_materials.building_maker = _material(Color(0.25, 0.38, 0.42))
+	_materials.building_maker_dark = _material(Color(0.18, 0.26, 0.31))
+	_materials.building_civic = _material(Color(0.44, 0.45, 0.52))
+	_materials.building_transit = _material(Color(0.24, 0.29, 0.24))
+	_materials.window_lit = _material(Color(0.9, 0.76, 0.38), Color(1.0, 0.72, 0.28), 0.9)
+	_materials.window_dark = _material(Color(0.05, 0.08, 0.1))
+	_materials.city_marker = _material(Color(0.15, 0.55, 0.95), Color(0.05, 0.5, 1.0), 0.8)
+	_materials.city_power = _material(Color(0.95, 0.72, 0.18), Color(1.0, 0.58, 0.05), 0.8)
+	_materials.city_market = _material(Color(0.88, 0.28, 0.33), Color(0.9, 0.12, 0.18), 0.65)
+	_materials.city_transit = _material(Color(0.1, 0.55, 0.42), Color(0.0, 0.6, 0.36), 0.55)
+	_materials.city_water = _material(Color(0.12, 0.45, 0.8), Color(0.1, 0.55, 0.95), 0.65)
+	_materials.street_light = _material(Color(1.0, 0.92, 0.62), Color(1.0, 0.78, 0.28), 1.5)
 
 
 func _material(color: Color, emission: Color = Color.BLACK, energy: float = 0.0) -> StandardMaterial3D:
@@ -105,11 +237,13 @@ func _create_room() -> void:
 	add_child(room)
 	_box(room, "Floor", Vector3(10, 0.2, 10), Vector3(0, -0.1, 0), _materials.floor, true)
 	_box(room, "WallNorth", Vector3(10, 3, 0.2), Vector3(0, 1.5, -5), _materials.wall, true)
-	_box(room, "WallSouth", Vector3(10, 3, 0.2), Vector3(0, 1.5, 5), _materials.wall, true)
+	_box(room, "WallSouthLeft", Vector3(6.7, 3, 0.2), Vector3(-1.65, 1.5, 5), _materials.wall, true)
+	_box(room, "WallSouthRight", Vector3(1.0, 3, 0.2), Vector3(4.5, 1.5, 5), _materials.wall, true)
+	_box(room, "WallSouthHeader", Vector3(2.3, 0.65, 0.2), Vector3(3.0, 2.68, 5), _materials.wall, true)
 	_box(room, "WallEast", Vector3(0.2, 3, 10), Vector3(5, 1.5, 0), _materials.wall, true)
 	_box(room, "WallWest", Vector3(0.2, 3, 10), Vector3(-5, 1.5, 0), _materials.wall, true)
 	_box(room, "Ceiling", Vector3(10, 0.2, 10), Vector3(0, 3.1, 0), _materials.ceiling, true)
-	_label(room, "MY ROOM", Vector3(0, 2.05, 4.86), Vector3(0, 180, 0), 34)
+	_label(room, "SAFEHOUSE", Vector3(0, 2.05, 4.86), Vector3(0, 180, 0), 34)
 	_create_gate(room)
 
 
@@ -133,6 +267,128 @@ func _create_gate(parent: Node3D) -> void:
 	gate.script = load("res://scripts/gate.gd")
 	gate.set("room_controller_path", get_path())
 	parent.add_child(gate)
+
+
+func _create_city() -> void:
+	var city := Node3D.new()
+	city.name = "City"
+	add_child(city)
+	_box(city, "CityGround", Vector3(46, 0.18, 56), Vector3(0, -0.14, 27), _materials.grass, true)
+	_create_road(city, "GateRoad", Vector3(0, 0.0, 15), Vector3(7.0, 0.05, 20.0), false)
+	_create_road(city, "MarketRoad", Vector3(0, 0.01, 30), Vector3(34.0, 0.05, 6.5), true)
+	_create_road(city, "CivicRoad", Vector3(6.0, 0.02, 39), Vector3(7.0, 0.05, 18.0), false)
+	for district in CITY_DISTRICTS:
+		_create_city_district(city, district)
+	for block in CITY_BLOCKS:
+		_create_city_building(city, block)
+	for site in CITY_SITES:
+		_create_city_site(city, site)
+	_create_city_boundaries(city)
+	_create_city_entry_zone(city)
+	_label(city, "NEW HARBOR CITY", Vector3(0, 3.2, 7.0), Vector3(-10, 180, 0), 32)
+
+
+func _create_road(parent: Node3D, name: String, pos: Vector3, size: Vector3, horizontal: bool) -> void:
+	_box(parent, name, size, pos, _materials.asphalt, true)
+	if horizontal:
+		_box(parent, "%sMarking" % name, Vector3(size.x - 1.0, 0.02, 0.12), pos + Vector3(0, 0.04, 0), _materials.road_marking, false)
+	else:
+		_box(parent, "%sMarking" % name, Vector3(0.12, 0.02, size.z - 1.0), pos + Vector3(0, 0.04, 0), _materials.road_marking, false)
+
+
+func _create_city_district(parent: Node3D, district: Dictionary) -> void:
+	var district_node := Node3D.new()
+	district_node.name = "District_%s" % str(district["id"])
+	district_node.position = district["position"]
+	parent.add_child(district_node)
+	_box(district_node, "Plot", district["size"], Vector3.ZERO, _mat(district["material"]), true)
+	_label(district_node, str(district["label"]), Vector3(0, 0.22, 0), Vector3(-90, 0, 0), 18)
+	var slot := Marker3D.new()
+	slot.name = "DistrictAssetSlot"
+	slot.set_meta("asset_role", "district_ground_or_set_dressing")
+	slot.set_meta("district_id", district["id"])
+	district_node.add_child(slot)
+
+
+func _create_city_building(parent: Node3D, block: Dictionary) -> void:
+	var building := Node3D.new()
+	building.name = "Building_%s" % str(block["id"])
+	building.position = block["position"]
+	parent.add_child(building)
+	var size: Vector3 = block["size"]
+	_box(building, "PlaceholderMass", size, Vector3.ZERO, _mat(block["material"]), true)
+	_add_building_windows(building, size)
+	_label(building, str(block["label"]), Vector3(0, (size.y * 0.5) + 0.35, 0), Vector3.ZERO, 18)
+	var slot := Marker3D.new()
+	slot.name = "AssetSlot"
+	slot.position = Vector3(0, -size.y * 0.5, 0)
+	slot.set_meta("asset_role", "replace_placeholder_building")
+	slot.set_meta("city_block_id", block["id"])
+	slot.set_meta("asset_note", "Instance a final 3D building here and hide PlaceholderMass.")
+	building.add_child(slot)
+
+
+func _add_building_windows(building: Node3D, size: Vector3) -> void:
+	var rows: int = max(1, int(size.y / 1.2))
+	var cols: int = max(1, int(size.x / 1.4))
+	for row in range(rows):
+		for col in range(cols):
+			var column_count: int = max(1, cols - 1)
+			var x: float = -size.x * 0.35 + float(col) * (size.x * 0.7 / float(column_count))
+			var y: float = -size.y * 0.25 + float(row) * 0.9
+			var mat: Material = _materials.window_lit if (row + col) % 2 == 0 else _materials.window_dark
+			_box(building, "Window_%d_%d" % [row, col], Vector3(0.42, 0.36, 0.04), Vector3(x, y, -size.z * 0.51), mat, false)
+
+
+func _create_city_site(parent: Node3D, site: Dictionary) -> void:
+	var node := Node3D.new()
+	node.name = "CitySite_%s" % str(site["id"])
+	node.position = site["position"]
+	parent.add_child(node)
+	_box(node, "MarkerBase", site["size"], Vector3.ZERO, _mat(site["material"]), false)
+	_box(node, "MarkerPost", Vector3(0.12, 0.9, 0.12), Vector3(0, 0.55, 0), _materials.metal, false)
+	_label(node, str(site["label"]), Vector3(0, 1.25, 0), Vector3.ZERO, 18)
+	_add_collision_owner(node, Vector3(1.5, 1.5, 1.1), Vector3(0, 0.45, 0))
+	_add_area(node, "InteractArea", Vector3(2.4, 2.0, 2.4), Vector3(0, 0.55, 0))
+	var slot := Marker3D.new()
+	slot.name = "AssetSlot"
+	slot.position = Vector3.ZERO
+	slot.set_meta("asset_role", "replace_city_interaction_marker")
+	slot.set_meta("site_id", site["id"])
+	node.add_child(slot)
+	node.script = load("res://scripts/city_site.gd")
+	node.set("site_id", site["id"])
+	node.set("site_title", site["title"])
+	node.set("story_flag", site["story_flag"])
+	node.set("interact_hint", site["hint"])
+	node.set("visit_message", site["message"])
+	node.set("room_controller_path", get_path())
+
+
+func _create_city_boundaries(parent: Node3D) -> void:
+	_box(parent, "CityBoundaryWest", Vector3(0.3, 2.2, 56.0), Vector3(-23.0, 1.0, 27.0), _materials.dark, true)
+	_box(parent, "CityBoundaryEast", Vector3(0.3, 2.2, 56.0), Vector3(23.0, 1.0, 27.0), _materials.dark, true)
+	_box(parent, "CityBoundarySouth", Vector3(46.0, 2.2, 0.3), Vector3(0.0, 1.0, 55.0), _materials.dark, true)
+
+
+func _create_city_entry_zone(parent: Node3D) -> void:
+	var zone := Area3D.new()
+	zone.name = "CityEntryZone"
+	zone.position = Vector3(3.0, 1.0, 6.6)
+	zone.collision_layer = 0
+	zone.collision_mask = LAYER_WORLD
+	parent.add_child(zone)
+	var shape := CollisionShape3D.new()
+	shape.name = "CollisionShape3D"
+	var box := BoxShape3D.new()
+	box.size = Vector3(2.4, 2.0, 2.0)
+	shape.shape = box
+	zone.add_child(shape)
+	zone.body_entered.connect(func(body: Node) -> void:
+		if body == _player:
+			set_current_zone(&"new_harbor_city")
+			show_world_message("Entered New Harbor City")
+	)
 
 
 func _create_furniture() -> void:
@@ -448,6 +704,9 @@ func _create_cctv_cameras() -> void:
 	_create_cctv_camera(2, Vector3(-4.55, 2.65, 4.55), target)
 	_create_cctv_camera(3, Vector3(-4.55, 2.65, -4.55), target)
 	_create_cctv_camera(4, Vector3(4.55, 2.65, -4.55), target)
+	_create_cctv_camera(5, Vector3(0.0, 7.5, 18.0), Vector3(0.0, 1.0, 26.0))
+	_create_cctv_camera(6, Vector3(-17.0, 6.5, 33.0), Vector3(-7.0, 1.0, 31.0))
+	_create_cctv_camera(7, Vector3(17.0, 7.0, 41.0), Vector3(7.0, 1.0, 39.0))
 
 
 func _create_cctv_camera(index: int, position: Vector3, target: Vector3) -> void:
@@ -534,6 +793,10 @@ func _on_device_state_changed(_is_on: bool) -> void:
 
 
 func show_room_message(text: String) -> void:
+	show_world_message(text)
+
+
+func show_world_message(text: String) -> void:
 	if not _message_label:
 		return
 	if _message_tween:
@@ -547,6 +810,33 @@ func show_room_message(text: String) -> void:
 	_message_tween.finished.connect(func() -> void:
 		_message_label.visible = false
 	)
+
+
+func set_current_zone(zone_id: StringName) -> void:
+	if GameState.current_zone == zone_id:
+		return
+	GameState.current_zone = zone_id
+	if zone_id == &"city_threshold" and not GameState.active_objectives.is_empty():
+		GameState.active_objectives[0] = "Enter New Harbor City"
+		GameState.objective_updated.emit(GameState.active_objectives[0])
+	GameState.zone_changed.emit(zone_id)
+
+
+func visit_city_site(site_id: StringName, site_title: String, story_flag: StringName, message: String) -> void:
+	var was_new := not GameState.visited_city_sites.has(site_id)
+	GameState.visited_city_sites[site_id] = true
+	if not str(story_flag).is_empty():
+		GameState.city_story_flags[story_flag] = true
+	if was_new:
+		GameState.city_reputation += 1
+		var scan_objective := "Inspect city command points (%d/%d)" % [GameState.visited_city_sites.size(), CITY_SITES.size()]
+		if GameState.active_objectives.size() > 1:
+			GameState.active_objectives[1] = scan_objective
+		if GameState.visited_city_sites.size() == CITY_SITES.size() and not GameState.active_objectives.has("Choose the first district upgrade"):
+			GameState.active_objectives.append("Choose the first district upgrade")
+		GameState.objective_updated.emit(scan_objective)
+	GameState.city_site_visited.emit(site_id, story_flag)
+	show_world_message("%s: %s" % [site_title, message])
 
 
 func _hand(name: String, pos: Vector3) -> MeshInstance3D:
@@ -624,6 +914,7 @@ func _create_lighting() -> void:
 	glow.light_energy = 0.0
 	glow.position = Vector3(0, 1.5, -4.35)
 	lighting.add_child(glow)
+	_create_city_lighting(lighting)
 	var env := WorldEnvironment.new()
 	env.name = "WorldEnvironment"
 	var environment := Environment.new()
@@ -638,6 +929,24 @@ func _create_lighting() -> void:
 	if computer:
 		computer.set("monitor_glow_path", computer.get_path_to(glow))
 	_sync_switch_states()
+
+
+func _create_city_lighting(parent: Node3D) -> void:
+	for index in range(STREET_LIGHT_POSITIONS.size()):
+		var pos := STREET_LIGHT_POSITIONS[index]
+		var pole := Node3D.new()
+		pole.name = "StreetLight%d" % (index + 1)
+		pole.position = pos
+		parent.add_child(pole)
+		_box(pole, "Pole", Vector3(0.12, 3.0, 0.12), Vector3(0, 1.5, 0), _materials.metal, false)
+		_box(pole, "LampHead", Vector3(0.65, 0.14, 0.25), Vector3(0.25, 3.05, 0), _materials.street_light, false)
+		var light := OmniLight3D.new()
+		light.name = "StreetGlow"
+		light.light_color = Color("#ffd780")
+		light.light_energy = 0.75
+		light.omni_range = 7.5
+		light.position = Vector3(0.25, 2.75, 0)
+		pole.add_child(light)
 
 
 func _create_ui() -> void:
@@ -707,6 +1016,10 @@ func _box(parent: Node, name: String, size: Vector3, pos: Vector3, mat: Material
 	if collision:
 		_add_collision_child(mesh_instance, size, Vector3.ZERO)
 	return mesh_instance
+
+
+func _mat(key: StringName) -> Material:
+	return _materials.get(key, _materials.dark)
 
 
 func _add_collision_child(parent: Node3D, size: Vector3, pos: Vector3) -> StaticBody3D:
