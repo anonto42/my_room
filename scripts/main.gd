@@ -245,6 +245,7 @@ func _create_room() -> void:
 	_box(room, "Ceiling", Vector3(10, 0.2, 10), Vector3(0, 3.1, 0), _materials.ceiling, true)
 	_label(room, "SAFEHOUSE", Vector3(0, 2.05, 4.86), Vector3(0, 180, 0), 34)
 	_create_gate(room)
+	_create_apartment_entry_zone(room)
 
 
 func _create_gate(parent: Node3D) -> void:
@@ -391,6 +392,26 @@ func _create_city_entry_zone(parent: Node3D) -> void:
 	)
 
 
+func _create_apartment_entry_zone(parent: Node3D) -> void:
+	var zone := Area3D.new()
+	zone.name = "ApartmentEntryZone"
+	zone.position = Vector3(3.0, 1.0, 3.2)
+	zone.collision_layer = 0
+	zone.collision_mask = LAYER_WORLD
+	parent.add_child(zone)
+	var shape := CollisionShape3D.new()
+	shape.name = "CollisionShape3D"
+	var box := BoxShape3D.new()
+	box.size = Vector3(2.4, 2.0, 2.0)
+	shape.shape = box
+	zone.add_child(shape)
+	zone.body_entered.connect(func(body: Node) -> void:
+		if body == _player:
+			set_current_zone(&"apartment")
+			show_world_message("Entered Safehouse Room")
+	)
+
+
 func _create_furniture() -> void:
 	var furniture := Node3D.new()
 	furniture.name = "Furniture"
@@ -490,7 +511,7 @@ func _create_computer_desk(parent: Node3D) -> void:
 	var sit := Marker3D.new()
 	sit.name = "SitPosition"
 	sit.position = Vector3(0, 0.95, -0.05)
-	sit.rotation_degrees = Vector3(0, 180, 0)
+	sit.rotation_degrees = Vector3(0, 0, 0)
 	chair.add_child(sit)
 	chair.script = load("res://scripts/gaming_chair.gd")
 	chair.set("computer_path", NodePath(".."))
@@ -740,6 +761,17 @@ func _toggle_camera_view() -> void:
 		show_room_message("Player view")
 	else:
 		show_room_message("CCTV view %d of %d" % [_camera_view_index, _cctv_cameras.size()])
+
+
+func reset_camera_to_player() -> void:
+	if not _player_camera:
+		return
+	_camera_view_index = 0
+	_player_camera.current = true
+	for cam in _cctv_cameras:
+		cam.current = false
+	if _player and _player.has_method("set_external_camera_view"):
+		_player.set_external_camera_view(false)
 
 
 func toggle_switch_control(control_id: StringName) -> void:

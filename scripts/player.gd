@@ -85,7 +85,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				_finish_sleep()
 			return
 		if is_sitting:
-			leave_sitting()
+			_update_interact_target()
+			if current_interact_target and current_interact_target != _sit_source and current_interact_target.has_method("interact"):
+				current_interact_target.interact()
+			else:
+				leave_sitting()
 			return
 		_update_interact_target()
 		if current_interact_target and current_interact_target.has_method("interact"):
@@ -146,7 +150,13 @@ func _update_interact_target() -> void:
 		_set_prompt("Press E to get up | Press C for CCTV views" if _sleep_can_wake else "Press C for CCTV views")
 		return
 	if is_sitting:
-		_set_prompt("Press E to stand up")
+		current_interact_target = null
+		if interact_ray.is_colliding():
+			current_interact_target = _resolve_interactable(interact_ray.get_collider())
+		if current_interact_target and current_interact_target != _sit_source:
+			_set_prompt(str(current_interact_target.get("interact_hint")))
+		else:
+			_set_prompt("Press E to stand up")
 		return
 	current_interact_target = null
 	if interact_ray.is_colliding():
@@ -263,8 +273,15 @@ func leave_sitting() -> void:
 	if input_locked or not is_sitting:
 		return
 	input_locked = true
-	var stand_pos := global_position + (global_transform.basis.z * -0.9)
+	var sit_position: Marker3D = _sit_source.get_node_or_null("SitPosition") if _sit_source else null
+	var stand_dir := global_transform.basis.z
+	if sit_position:
+		stand_dir = sit_position.global_transform.basis.z
+	var stand_pos := global_position + (stand_dir * 0.9)
 	stand_pos.y = _spawn_transform.origin.y
+	var current_scene := get_tree().current_scene
+	if current_scene and current_scene.has_method("reset_camera_to_player"):
+		current_scene.reset_camera_to_player()
 	var tween := create_tween()
 	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.set_ease(Tween.EASE_IN_OUT)
@@ -317,6 +334,9 @@ func _finish_sleep() -> void:
 	head.transform = _sleep_return_head_transform
 	camera.position = Vector3.ZERO
 	camera.rotation = Vector3.ZERO
+	var current_scene := get_tree().current_scene
+	if current_scene and current_scene.has_method("reset_camera_to_player"):
+		current_scene.reset_camera_to_player()
 	var tween := create_tween()
 	if _fade_overlay:
 		tween.tween_property(_fade_overlay, "color", Color(0, 0, 0, 0), 1.0)
